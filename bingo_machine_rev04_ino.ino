@@ -24,6 +24,14 @@
 */
 
 #include <Adafruit_NeoPixel.h>
+#include <Wtv020sd16p.h>        //xxxxxxx  includi la libresia del modulo audio
+
+int resetPin = 2;  // xxxxxxx pin modulo vocale reset pin che corrisponde al pin 1 del modulo.
+int clockPin = 3;  // xxxxxxx pin modulo vocale clock pin che corrisponde al pin 7 del modulo.
+int dataPin = 4;  // xxxxxxx pin modulo vocale data pin che corrisponde al pin 10 del modulo.
+int busyPin = 5;  // xxxxxxxx pin modulo vocale busy pin che corrisponde al pin 15 del modulo.
+
+Wtv020sd16p wtv020sd16p(resetPin,clockPin,dataPin,busyPin); //xxxxxxxxx crea l'oggetto modulo  il modulo
 
 const int NewnumberButton = 2 ;                     // Digital IO pin 2 is connected to the Newnumber button with a normally open contact
 // Pin 2 will be driven with the built-in pull-up resistor to make it normally HIGH
@@ -121,7 +129,12 @@ void setup() {
   for (count = 0; count < 76 ; count++) {           // put all data in the Array SCORE to 0 (Array positions run from 0 to 75; the zero position is not used)
     SCORE[count] = 0;
   }
-
+  
+  wtv020sd16p.reset();                                 //xxxxxxxxx   reset del modulo audio
+  delay(1000);                                          //xxxxxxxxx   pausa
+  wtv020sd16p.setVolume(7);                              //xxxxxxxxx   regolazione volume 
+  
+  
   /*for (int n = 0; n < 10 ; n++)                     // this code can be used for testing all the numbers from 0 - 9 on the two 7-Segment displays (the 2 DP's are not tested) 
   {
     for (int s = 0; s < 8 ; s++)
@@ -165,7 +178,10 @@ void loop() {
      //PRINTNUMBERSERIAL();                       // print the generated NW_NUMBER to the serial monitor and show the new content of the SCORE array
 
      DISPLAYNUMBER (TENSNUMBER, UNITNUMBER);
-
+      
+     wtv020sd16p.asyncPlayVoice(NW_NUMBER);        //xxxxxxxxx   pronuncia il numero estratto
+     delay(1500);                                  //xxxxxxxxx   tempo esecuzione audio
+      
      DISPLAYSCORE ();
 
     }
